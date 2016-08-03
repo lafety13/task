@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Авг 03 2016 г., 12:25
+-- Время создания: Авг 03 2016 г., 15:10
 -- Версия сервера: 10.1.13-MariaDB
 -- Версия PHP: 5.6.21
 
@@ -44,8 +44,9 @@ CREATE TABLE `reviews` (
 INSERT INTO `reviews` (`id`, `name`, `email`, `text`, `edit`, `date`, `confirm`, `img`) VALUES
 (131, 'admin', 'kozak13vadim13@bigmir.net', 'text', 0, '2016-8-3', 0, '189320312'),
 (130, 'ivan', 'koozyy@bigmir.net', 'test', 0, '2016-8-3', 0, '660117510'),
-(128, 'ÑƒÐºÐµÑƒÐº', 'koozyy@bigmir.net', 'ÑƒÐºÐµÑƒÐºÐµÑƒÐº', 0, '2016-8-3', 1, '990144'),
-(129, 'Vadim', 'koozyy@bigmir.net', 'Ñ‚ÐµÐºÑÑ‚', 0, '2016-8-3', 0, '912218261');
+(128, 'ÑƒÐºÐµÑƒÐº', 'koozyy@bigmir.net', 'TEST', 1, '2016-8-3', 1, '990144'),
+(129, 'Vadim', 'koozyy@bigmir.net', 'Ñ‚ÐµÐºÑÑ‚', 0, '2016-8-3', 1, '912218261'),
+(132, 'Vadim', 'koozyy@bigmir.net', 'TEXT', 0, '2016-8-3', 0, '1022435505');
 
 -- --------------------------------------------------------
 
@@ -66,7 +67,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`) VALUES
-(1, 'vadim', 'koozyy@bigmir.net', 123, 'admin');
+(1, 'vadim', 'koozyy@bigmir.net', 123, 'admin'),
+(5, 'admin', 'admin@mail.ru', 123, 'admin');
 
 --
 -- Индексы сохранённых таблиц
@@ -92,12 +94,12 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

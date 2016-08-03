@@ -1,33 +1,30 @@
 <?php
 
-class Db {
-	private $_params;
-	public $connection;
-	protected static $_instance = NULL;
+/**
+ * Класс Db
+ * Компонент для работы с базой данных
+ */
+class Db
+{
 
-	private function __wakeup(){}
-	private function __clone(){}
+    /**
+     * Устанавливает соединение с базой данных
+     * @return \PDO <p>Объект класса PDO для работы с БД</p>
+     */
+    public static function getConnection()
+    {
+        // Получаем параметры подключения из файла
+        $paramsPath = ROOT . '/config/params.php';
+        $params = include($paramsPath);
 
-	private function __construct() {
-		$this->_params = include (ROOT . '/config/params.php');
+        // Устанавливаем соединение
+        $dsn = "mysql:host={$params['host']};dbname={$params['db']}";
+        $db = new PDO($dsn, $params['user'], $params['password']);
 
-		$this->connection = new mysqli(
-			$this->_params['host'],
-			$this->_params['user'],
-			$this->_params['password'],
-			$this->_params['db']
-		) or die ("Невозможно установить соединение" );
+        // Задаем кодировку
+        //$db->exec("set names utf8");
 
-		if ($this->connection->connect_errno) {
-	  		printf("Не удалось подключиться: %s\n", $this->connection->connect_error);
-	   		exit();
-		}
-	}
+        return $db;
+    }
 
-	public static function getInstance() {
-		if (self::$_instance === NULL) {
-			return new self;
-		}
-		return self::$_instance;
-	}
 }

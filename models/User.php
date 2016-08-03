@@ -4,14 +4,15 @@ class User
 {
     public static function checkUserData($name, $password)
     {
-        $db = Db::getInstance();
+        $db = Db::getConnection();
 
-        $result = $db->connection->prepare("SELECT * FROM users WHERE name = ? AND password = ?");
-        $result->bind_param('ss', $name, $password);
+        $result = $db->prepare("SELECT * FROM users WHERE name = :name AND password = :password");
+        $result->bindParam(':name', $name, PDO::PARAM_STR);
+        $result->bindParam(':password', $password, PDO::PARAM_STR);
         $result->execute();
         
-        $arrUser = $result->get_result();
-        while($row = $arrUser->fetch_array(MYSQL_ASSOC)) {
+        
+        while($row = $result->fetch()) {
             $user = $row;
         }
 
@@ -23,14 +24,13 @@ class User
 
     public static function getUserById($userId)
     {
-        $db = Db::getInstance();
+        $db = Db::getConnection();
 
-        $result = $db->connection->prepare("SELECT * FROM users WHERE id = ?");
-        $result->bind_param('i', $userId);
+        $result = $db->prepare("SELECT * FROM users WHERE id = :id");
+        $result->bindParam(':id', $userId, PDO::PARAM_INT);
         $result->execute();
         
-        $arrUser = $result->get_result();
-        while($row = $arrUser->fetch_array(MYSQL_ASSOC)) {
+        while($row = $result->fetch()) {
             $user = $row;
         }
         return $user;

@@ -11,18 +11,16 @@ class Feedback
 
 	public static function addPost(array $post, $img)
 	{
-		$db = Db::getInstance();
+		$db = Db::getConnection();
 
-		$result = $db->connection->prepare("INSERT INTO reviews (name, email, text, date, img) 
-			VALUES (?, ?, ?, ?, ?)");
+		$result = $db->prepare("INSERT INTO reviews (name, email, text, date, img) 
+			VALUES (:name, :email, :text, :date, :img)");
 
-		$result->bind_param('sssss', 
-			trim($post['name']), 
-			trim($post['email']), 
-			trim($post['text']),
-			date("Y-n-j"),
-			$img
-		);
+		$result->bindParam(':name', trim($post['name']), PDO::PARAM_STR);
+		$result->bindParam(':email', trim($post['email']), PDO::PARAM_STR);
+		$result->bindParam(':text', trim($post['text']), PDO::PARAM_STR);
+		$result->bindParam(':date', date("Y-n-j"), PDO::PARAM_STR);
+		$result->bindParam(':img', $img, PDO::PARAM_STR);
 		$result->execute();
 
 		header('location: ' . $_SERVER['REDIRECT_URL']);
@@ -31,10 +29,10 @@ class Feedback
 
 	public static function getReviews()
 	{
-		$db = Db::getInstance();
+		$db = Db::getConnection();
 
-		$reviews = $db->connection->query("SELECT * FROM reviews ORDER BY date DESC");
-		while ($row = mysqli_fetch_array($reviews, MYSQL_ASSOC)) {
+		$reviews = $db->query("SELECT * FROM reviews ORDER BY date DESC");
+		while ($row = $reviews->fetch()) {
 			$allReviews[] = $row;
 		}
 		if (!empty($allReviews)) {
@@ -45,15 +43,14 @@ class Feedback
 
 	public static function getReviewById($id)
 	{
-		$db = Db::getInstance();
+		$db = Db::getConnection();
 
-		$result = $db->connection->prepare("SELECT * FROM reviews WHERE id = ?");
-		$result->bind_param('i', $id);
+		$result = $db->prepare("SELECT * FROM reviews WHERE id = :id");
+		$result->bindParam(':id', $id, PDO::PARAM_INT);
 		$result->execute();
 
-		$aReviews = $result->get_result();
 
-        while($row = $aReviews->fetch_array(MYSQL_ASSOC)) {
+        while($row = $result->fetch()) {
             $review = $row;
         }
 		return $review; 
@@ -61,7 +58,7 @@ class Feedback
 	
 	public static function getTotalReviews()
 	{
-		$db = Db::getInstance();
+		$db = Db::getConnection();
 
 		$result = $db->connection->query('SELECT COUNT(*) FROM reviews');
 		$total = mysqli_fetch_array($result); 
@@ -85,10 +82,11 @@ class Feedback
 	}
 	public static function update($id, array $post)
 	{
-		$db = Db::getInstance();
+		$db = Db::getConnection();
 
-		$review = $db->connection->prepare("UPDATE reviews SET text = ?, edit = 1 WHERE id = ?");
-		$review->bind_param('si', $post['text'], $id);
+		$review = $db->prepare("UPDATE reviews SET text = :text, edit = 1 WHERE id = :id");
+		$review->bindParam(':text', $post['text'], PDO::PARAM_STR);
+		$review->bindParam(':id', $id, PDO::PARAM_INT);
 		$review->execute();
 
 		header('location: /admfeedback');
@@ -96,10 +94,10 @@ class Feedback
 
 	public static function confirmUpdate($id)
 	{
-		$db = Db::getInstance();
+		$db = Db::getConnection();
 
-		$review = $db->connection->prepare("UPDATE reviews SET confirm = 1 WHERE id = ?");
-		$review->bind_param('s', $id);
+		$review = $db->prepare("UPDATE reviews SET confirm = 1 WHERE id = :id");
+		$review->bindParam(':id', $id, PDO::PARAM_STR);
 		$review->execute();
 
 		header('location: /unconfirmed');
