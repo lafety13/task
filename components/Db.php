@@ -1,30 +1,29 @@
 <?php
 
-/**
- * Класс Db
- * Компонент для работы с базой данных
- */
-class Db
-{
+class Db {
+	private $connection;
+	protected static $instance = NULL;
 
-    /**
-     * Устанавливает соединение с базой данных
-     * @return \PDO <p>Объект класса PDO для работы с БД</p>
-     */
-    public static function getConnection()
-    {
-        // Получаем параметры подключения из файла
-        $paramsPath = ROOT . '/config/params.php';
-        $params = include($paramsPath);
+	private function __wakeup(){}
+	private function __clone(){}
 
-        // Устанавливаем соединение
+	private function __construct() {
+		$params = include (ROOT . '/config/params.php');
+
         $dsn = "mysql:host={$params['host']};dbname={$params['db']}";
-        $db = new PDO($dsn, $params['user'], $params['password']);
+        $opt = [
+		    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+		    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+		];
+        $this->connection = new PDO($dsn, $params['user'], $params['password'], $opt);
+	}
 
-        // Задаем кодировку
-        //$db->exec("set names utf8");
-
-        return $db;
-    }
-
+	public static function getConnection() {
+		if (self::$instance === NULL) {
+			$obj = new self;
+			return $obj->connection;
+		}
+		return self::$instance->connection;
+	}
 }
+
